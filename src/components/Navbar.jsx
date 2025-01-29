@@ -15,6 +15,10 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
             <NavLink to="/generate" className="hover:bg-gray-500 p-1 rounded-lg cursor-pointer">
               Generate GIF
             </NavLink>
+
+            <NavLink to="/ai" className="hover:bg-gray-500 p-1 rounded-lg cursor-pointer">
+              AI
+            </NavLink>
           </>
         ) : null} 
       </div>

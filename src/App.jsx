@@ -5,6 +5,7 @@ import Auth from './components/Auth';
 import Random from './components/Random';
 import Generate from './components/Generate';
 import toast, { Toaster } from 'react-hot-toast';
+import AIComponent from './components/AIComponent';
 
 const App = () => {
   // Check if user is already logged in from localStorage
@@ -39,6 +40,11 @@ const App = () => {
         <Route
           path="/generate"
           element={isLoggedIn ? <Generate /> : <Navigate to="/auth" />}
+        />
+
+        <Route
+          path="/AI"
+          element={isLoggedIn ? <AIComponent /> : <Navigate to="/auth" />}
         />
         <Route path="/" element={isLoggedIn ? <Navigate to="/random" /> : <Navigate to="/auth" />} />
       </Routes>
