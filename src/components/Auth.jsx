@@ -11,7 +11,7 @@ const Auth = ({ onLoginSuccess }) => {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
-    const url = state === 'Sign Up' ? 'http://localhost:4000/api/v1/signup' : 'http://localhost:4000/api/v1/login';
+    const url = state === 'Sign Up' ? 'https://gif-backend-ve0b.onrender.com/api/v1/signup' : 'https://gif-backend-ve0b.onrender.com/api/v1/login';
 
     const userData = {
       email,
