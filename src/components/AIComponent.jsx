@@ -2,28 +2,27 @@ import React, { useState, useRef, useEffect } from 'react';
 import { FaUser } from "react-icons/fa";
 import { RiSparkling2Line } from "react-icons/ri";
 import { IoMdSend } from "react-icons/io";
-import chatimage from '../assets/chatimage.webp'
+import { saveAs } from 'file-saver';  // Import FileSaver
+import chatimage from '../assets/chatimage.webp';
 
 const AIComponent = () => {
-  const [userInput, setUserInput] = useState('');        // Store user input
-  const [conversation, setConversation] = useState([]);   // Store the conversation history
-  const [loading, setLoading] = useState(false);          // Loading state
-  const conversationEndRef = useRef(null);                // Ref for auto-scrolling to the end of conversation
+  const [userInput, setUserInput] = useState('');
+  const [conversation, setConversation] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const conversationEndRef = useRef(null);
 
-  const API_KEY = import.meta.env.VITE_GOOGLE_AI_KEY;     // Get API key from env
+  const API_KEY = import.meta.env.VITE_GOOGLE_AI_KEY;
 
-  // Function to handle the prompt submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!userInput.trim()) return;  // Prevent sending empty messages
+    if (!userInput.trim()) return;
 
-    setLoading(true);  // Start loading while making the request
+    setLoading(true);
 
-    // Update conversation with the user's prompt
     setConversation((prevConversation) => [
       ...prevConversation,
-      { text: userInput, sender: 'user' },  // Add user input to conversation history
+      { text: userInput, sender: 'user' },
     ]);
 
     try {
@@ -39,7 +38,7 @@ const AIComponent = () => {
               {
                 parts: [
                   {
-                    text: userInput,  // Send the user's input as the prompt
+                    text: userInput,
                   },
                 ],
               },
@@ -51,10 +50,9 @@ const AIComponent = () => {
       const data = await result.json();
       const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response from AI';
 
-      // Update conversation with the AI's response
       setConversation((prevConversation) => [
         ...prevConversation,
-        { text: aiResponse, sender: 'ai' },  // Add AI response to conversation history
+        { text: aiResponse, sender: 'ai' },
       ]);
     } catch (error) {
       console.error('Error generating content:', error);
@@ -63,10 +61,9 @@ const AIComponent = () => {
         { text: 'Something went wrong. Please try again.', sender: 'ai' },
       ]);
     } finally {
-      setLoading(false);  // Stop loading when request is complete
+      setLoading(false);
     }
 
-    // Clear the user input field after submitting
     setUserInput('');
   };
 
@@ -75,14 +72,27 @@ const AIComponent = () => {
     conversationEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [conversation]);
 
+  // Function to download the conversation as a Word document
+  const downloadChat = () => {
+    let content = '<html><head><style>body{font-family: Arial, sans-serif;}</style></head><body>';
+    conversation.forEach((message) => {
+      content += `<p><strong>${message.sender === 'user' ? 'User' : 'AI'}:</strong> ${message.text}</p>`;
+    });
+    content += '</body></html>';
+
+    // Blob object to represent the HTML content as a Word file
+    const blob = new Blob([content], { type: 'application/msword' });
+    saveAs(blob, 'chat-conversation.doc');
+  };
+
   return (
-    <div className="flex flex-col items-center p-1 pt-16 h-screen bg-gray-200">
+    <div className="flex flex-col items-center p-1 pt-16 h-screen pb-7 bg-gray-200">
       <h1 className="text-3xl font-mono mb-6">Chat with AI</h1>
 
       {conversation.length === 0 && (
-        <img src={chatimage} alt="AI Chat" className="h-96" />
+        <img src={chatimage} alt="AI Chat" className="h-80 justify-center items-center flex " />
       )}
-      {/* Display conversation history */}
+
       <div className="w-full md:max-w-5xl h-[calc(100vh-150px)] p-1 md:p-4 overflow-y-auto space-y-4 mb-6 relative custom-scrollbar">
         {conversation.map((message, index) => (
           <div
@@ -92,14 +102,14 @@ const AIComponent = () => {
             <strong className={`${message.sender === 'user' ? 'text-blue-700' : 'text-yellow-600'}`}>
               {message.sender === 'user' ? <FaUser /> : <RiSparkling2Line />}
             </strong>
-            <p>{message.text}</p>
+            <p>
+              <pre className="whitespace-pre-wrap break-words overflow-hidden">{message.text}</pre>
+            </p>
           </div>
         ))}
-        {/* This is the element that will be used for auto-scrolling */}
         <div ref={conversationEndRef} />
       </div>
 
-      {/* Input form */}
       <form onSubmit={handleSubmit} className="w-full max-w-lg fixed bottom-4 flex items-center px-4 py-2 bg-gray-200">
         <input
           type="text"
@@ -110,12 +120,22 @@ const AIComponent = () => {
         />
         <button
           type="submit"
-          disabled={loading || !userInput.trim()}  // Disable the button if the input is empty or loading
+          disabled={loading || !userInput.trim()}
           className={`py-[7px] px-4 bg-blue-500 text-white rounded-lg ${loading ? 'opacity-50' : 'hover:bg-blue-600'}`}
         >
           {loading ? 'Analyzing...' : <IoMdSend className='text-2xl' />}
         </button>
       </form>
+
+      {conversation.length != 0 && (
+        <button
+          onClick={downloadChat}
+          className="mt-4 py-2 px-4 mb-12 bg-green-500 text-white rounded-lg hover:bg-green-600"
+        >
+          Download Chat as Word File
+        </button>
+      )}
+
     </div>
   );
 };

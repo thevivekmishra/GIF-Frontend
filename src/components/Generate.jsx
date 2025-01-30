@@ -58,6 +58,7 @@ const Generate = () => {
             <img
               src={gif}
               alt="Generated Gif"
+              onClick
               className="w-full h-full object-cover transition-all duration-500 ease-in-out transform hover:scale-105"
             />
           ) : loading ? (
