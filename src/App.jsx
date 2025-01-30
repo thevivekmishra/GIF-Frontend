@@ -46,6 +46,7 @@ const App = () => {
           path="/AI"
           element={isLoggedIn ? <AIComponent /> : <Navigate to="/auth" />}
         />
+      
         <Route path="/" element={isLoggedIn ? <Navigate to="/random" /> : <Navigate to="/auth" />} />
       </Routes>
       <Toaster />

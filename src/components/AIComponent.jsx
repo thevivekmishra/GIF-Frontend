@@ -1,5 +1,8 @@
-
 import React, { useState, useRef, useEffect } from 'react';
+import { FaUser } from "react-icons/fa";
+import { RiSparkling2Line } from "react-icons/ri";
+import { IoMdSend } from "react-icons/io";
+import chatimage from '../assets/chatimage.webp'
 
 const AIComponent = () => {
   const [userInput, setUserInput] = useState('');        // Store user input
@@ -73,18 +76,21 @@ const AIComponent = () => {
   }, [conversation]);
 
   return (
-    <div className="flex flex-col items-center p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">Chat with AI</h1>
+    <div className="flex flex-col items-center p-1 pt-16 h-screen bg-gray-200">
+      <h1 className="text-3xl font-mono mb-6">Chat with AI</h1>
 
+      {conversation.length === 0 && (
+        <img src={chatimage} alt="AI Chat" className="h-96" />
+      )}
       {/* Display conversation history */}
-      <div className="w-full max-w-4xl h-96 p-4 overflow-y-auto space-y-4 mb-6 relative custom-scrollbar">
+      <div className="w-full md:max-w-5xl h-[calc(100vh-150px)] p-1 md:p-4 overflow-y-auto space-y-4 mb-6 relative custom-scrollbar">
         {conversation.map((message, index) => (
           <div
             key={index}
-            className={`p-2 rounded-lg ${message.sender === 'user' ? 'bg-blue-100 self-end' : 'bg-gray-200 self-start'}`}
+            className={`p-2 rounded-lg ${message.sender === 'user' ? 'bg-blue-200 self-end' : 'bg-gray-300 self-start'}`}
           >
-            <strong className={`${message.sender === 'user' ? 'text-blue-700' : 'text-gray-700'}`}>
-              {message.sender === 'user' ? 'You' : 'AI'}:
+            <strong className={`${message.sender === 'user' ? 'text-blue-700' : 'text-yellow-600'}`}>
+              {message.sender === 'user' ? <FaUser /> : <RiSparkling2Line />}
             </strong>
             <p>{message.text}</p>
           </div>
@@ -94,20 +100,20 @@ const AIComponent = () => {
       </div>
 
       {/* Input form */}
-      <form onSubmit={handleSubmit} className="w-full max-w-lg flex items-center">
+      <form onSubmit={handleSubmit} className="w-full max-w-lg fixed bottom-4 flex items-center px-4 py-2 bg-gray-200">
         <input
           type="text"
           value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}  
+          onChange={(e) => setUserInput(e.target.value)}
           placeholder="Type your message here..."
-          className="w-full p-3 mr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-2 mr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <button
           type="submit"
           disabled={loading || !userInput.trim()}  // Disable the button if the input is empty or loading
-          className={`py-2 px-4 bg-blue-500 text-white rounded-lg ${loading ? 'opacity-50' : 'hover:bg-blue-600'}`}
+          className={`py-[7px] px-4 bg-blue-500 text-white rounded-lg ${loading ? 'opacity-50' : 'hover:bg-blue-600'}`}
         >
-          {loading ? 'Sending...' : 'Send'}
+          {loading ? 'Analyzing...' : <IoMdSend className='text-2xl' />}
         </button>
       </form>
     </div>

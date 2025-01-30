@@ -35,8 +35,8 @@ const Random = () => {
   };
 
   return (
-    <div className="flex justify-center items-center pt-20 pb-10 max-h-screen bg-gray-200">
-      <div className="bg-white w-[550px] h-[450px] rounded-lg p-4 shadow-2xl flex flex-col justify-center items-center">
+    <div className="flex justify-center items-center h-[100vh]   bg-gray-200">
+      <div className="bg-white w-[550px] h-[450px] rounded-lg p-3 m-1 shadow-md flex flex-col justify-center items-center">
         <h1 className="text-2xl text-gray-800 font-semibold text-center mb-4">
           Get Your Random GIF!
         </h1>
@@ -69,9 +69,7 @@ const Random = () => {
           >
             Generate Random GIF
           </button>
-          <p className="text-sm text-gray-700 opacity-70">
-            Click to get a random GIF!
-          </p>
+        
         </div>
       </div>
     </div>

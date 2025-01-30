@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import login from '../assets/login.gif';
+import login from '../assets/login.png';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -8,9 +8,14 @@ const Auth = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);  // Loading state
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
+
+    // Set loading state to true
+    setIsLoading(true);
+
     const url = state === 'Sign Up' ? 'https://gif-backend-ve0b.onrender.com/api/v1/signup' : 'https://gif-backend-ve0b.onrender.com/api/v1/login';
 
     const userData = {
@@ -25,29 +30,32 @@ const Auth = ({ onLoginSuccess }) => {
       toast.success(`${state === 'Sign Up' ? 'Registration' : 'Login'} Successful`);
 
       // After successful login/signup, pass the token to the parent (App.js)
-      onLoginSuccess(response.data.token); 
-
+      onLoginSuccess(response.data.token);
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'An error occurred, please try again later.';
       toast.error(errorMessage);
       console.error('Error:', errorMessage);
+    } finally {
+      setIsLoading(false);  // Set loading state to false after request completes
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <div className="flex justify-center items-center h-screen px-2 pt-10 w-full gap-4 bg-gray-200">
       <div className="hidden md:block">
-        <img src={login} alt="Login" className="h-[500px] w-auto" />
+        <img src={login} alt="Login" className="h-[500px] w-[600px]" />
       </div>
 
-      <div className="w-full max-w-md p-6 bg-white rounded-lg border">
+      <div className="w-full max-w-md p-2 md:p-7 bg-white rounded-lg border">
         <form onSubmit={onSubmitHandler}>
           <h2 className="text-2xl font-bold mb-4 text-center">
             {state === 'Sign Up' ? 'Sign Up' : 'Login'}
           </h2>
-          <p className="text-center mb-6">
-            Please {state === 'Sign Up' ? 'Sign Up' : 'Login'} to generate GIF
-          </p>
+          
+          {/* Show "Please wait..." while loading */}
+          {isLoading && (
+            <div className="mb-4 text-center text-gray-500">Please wait...</div>
+          )}
 
           {state === 'Sign Up' && (
             <div className="mb-4">
@@ -62,6 +70,7 @@ const Auth = ({ onLoginSuccess }) => {
                 onChange={(e) => setName(e.target.value)}
                 value={name}
                 required
+                disabled={isLoading}  // Disable the input while loading
               />
             </div>
           )}
@@ -78,6 +87,7 @@ const Auth = ({ onLoginSuccess }) => {
               onChange={(e) => setEmail(e.target.value)}
               value={email}
               required
+              disabled={isLoading}  // Disable the input while loading
             />
           </div>
 
@@ -93,13 +103,15 @@ const Auth = ({ onLoginSuccess }) => {
               onChange={(e) => setPassword(e.target.value)}
               value={password}
               required
+              disabled={isLoading}  // Disable the input while loading
             />
           </div>
 
           <div className="mb-6">
             <button
               type="submit"
-              className="w-full py-3 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className={`w-full py-3 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={isLoading}  // Disable the button while loading
             >
               {state === 'Sign Up' ? 'Create Account' : 'Login'}
             </button>

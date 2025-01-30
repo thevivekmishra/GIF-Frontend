@@ -40,7 +40,7 @@ const Generate = () => {
   };
 
   return (
-    <div className="flex justify-center items-center pt-20 pb-10 max-h-screen bg-gray-200">
+    <div className="flex justify-center items-center pt-20 pb-10 h-screen px-1 bg-gray-200">
       <div className="bg-white w-[550px] h-[450px] rounded-lg p-4 shadow-2xl flex flex-col justify-center items-center">
         <h1 className="text-2xl text-gray-800 font-semibold text-center mb-4">
           Generate GIF by Tag
